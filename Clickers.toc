@@ -1,0 +1,7 @@
+## Interface: 11200
+## Title: Clickers
+## Version: 0.0.1
+## Notes: Test
+## Author: Duciel
+
+Main.lua
