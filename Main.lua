@@ -1,18 +1,18 @@
-Duciel = CreateFrame("Frame", "Duciel");
-Duciel:RegisterEvent("ADDON_LOADED");
-Duciel.main = {};
+Clickers = CreateFrame("Frame", "Clickers");
+Clickers:RegisterEvent("ADDON_LOADED");
+Clickers.main = {};
 
-setmetatable(Duciel.main, {__index = getfenv(0)});
-setfenv(1, Duciel.main);
+setmetatable(Clickers.main, {__index = getfenv(0)});
+setfenv(1, Clickers.main);
 
 cooldownTracker = {};
 	
-function Duciel.main:GetFrame()
-    return Duciel;
+function Clickers.main:GetFrame()
+    return Clickers;
 end
 
-function Duciel.main:GetEnv()
-    return Duciel.main;
+function Clickers.main:GetEnv()
+    return Clickers.main;
 end
 
 --- Function to check if a debuff is present on the unit
@@ -20,7 +20,7 @@ end
 -- @param[opt="target"] unit	The unit to check the debuff (target, player ...)
 -- @param[opt=1] debuffStack	The minimum number of stack to check, if no value passed, it will check if at least one stack is present
 -- @return found				Boolean to tell if the debuff was found or not
-function Duciel.main:FindDebuff(debuff, unit, debuffStack)
+function Clickers.main:FindDebuff(debuff, unit, debuffStack)
 	if unit == nil then
 		unit = "target";
 	end
@@ -44,7 +44,7 @@ function Duciel.main:FindDebuff(debuff, unit, debuffStack)
 					return true;
 				end
 			elseif (type == "table") then
-				if (Duciel.main:Contains(debuff, id)) then
+				if (Clickers.main:Contains(debuff, id)) then
 					return true;
 				end
 			end
@@ -66,7 +66,7 @@ end
 -- @param[opt="target"] unit	The unit to check the buff (target, player ...)
 -- @param[opt=1] buffStack		The minimum number of stack to check, if no value passed, it will check if at least one stack is present
 -- @return found				Boolean to tell if the buff was found or not
-function Duciel.main:FindBuff(buff, unit, buffStack)
+function Clickers.main:FindBuff(buff, unit, buffStack)
 	if unit == nil then
 		unit = "target";
 	end
@@ -90,7 +90,7 @@ function Duciel.main:FindBuff(buff, unit, buffStack)
 					return true;
 				end
 			elseif (type == "table") then
-				if (Duciel.main:Contains(buff, id)) then
+				if (Clickers.main:Contains(buff, id)) then
 					return true;
 				end
 			end
@@ -107,7 +107,7 @@ end
 -- @param tab		he table containing all the values
 -- @param val		The value to find in the table
 -- @return found	Boolean to tell if the value was found or not
-function Duciel.main:Contains(tab, val)
+function Clickers.main:Contains(tab, val)
 	for i, value in ipairs(tab) do
 		if value == val then
 			return true;
@@ -121,7 +121,7 @@ end
 -- @param name						name of the spell
 -- @booktype [opt=BOOKTYPE_SPELL]	where to look for the spell, default player spell book
 -- @return id						ID of the spell
-function Duciel.main:GetSpellID(name, booktype)
+function Clickers.main:GetSpellID(name, booktype)
 	if booktype == nil then
 		booktype = BOOKTYPE_SPELL;
 	end
@@ -139,7 +139,7 @@ function Duciel.main:GetSpellID(name, booktype)
 	end
 end
 
-function Duciel.main:SplitRankFromSpell(spell)
+function Clickers.main:SplitRankFromSpell(spell)
 	local spellName = string.gsub(spell, "%(Rank %d+%)", "");
 	local spellRank = 1;
 	
@@ -150,20 +150,20 @@ end
 -- @param name						name of the spell
 -- @booktype [opt=BOOKTYPE_SPELL]	where to look for the spell, default player spell book
 -- @return cooldown					Return the cooldown of the spell (not the remaining cooldown, 0 if spell is ready)
-function Duciel.main:GetSpellCooldownByName(spell, booktype)
+function Clickers.main:GetSpellCooldownByName(spell, booktype)
 	if booktype == nil then
 		booktype = BOOKTYPE_SPELL;
 	end
 	
-	spellName = Duciel.main:SplitRankFromSpell(spell);
+	spellName = Clickers.main:SplitRankFromSpell(spell);
 
-	local spellID = Duciel.main:GetSpellID(spellName);
+	local spellID = Clickers.main:GetSpellID(spellName);
 	local StartTime, Duration, Enable = GetSpellCooldown(spellID, booktype);
 	return Duration;
 end
 
-function Duciel.main:GetItemCooldown(item)
-	local bag, slot = Duciel.main:FindItem(item);
+function Clickers.main:GetItemCooldown(item)
+	local bag, slot = Clickers.main:FindItem(item);
 
 	local StartTime, Duration, Enable = GetContainerItemCooldown(bag, slot);
 	return Duration;
@@ -173,7 +173,7 @@ end
 -- @param name						name of the spell
 -- @booktype [opt=BOOKTYPE_SPELL]	where to look for the spell, default player spell book
 -- @return cooldown					Return the cooldown of the spell (not the remaining cooldown, 0 if spell is ready)
-function Duciel.main:SpellCast(spell, unit, rank)
+function Clickers.main:SpellCast(spell, unit, rank)
 	if unit == nil then
 		unit = "target";
 	end
@@ -182,11 +182,11 @@ function Duciel.main:SpellCast(spell, unit, rank)
 		spell = spell .. "(Rank " .. rank .. ")";
 	end
 	
-	if Duciel.main:FindDebuff(28431, "player") then -- Poison Charge
-		Duciel.main:UseBagItem(3386) -- Elixir of Poison Resistance
+	if Clickers.main:FindDebuff(28431, "player") then -- Poison Charge
+		Clickers.main:UseBagItem(3386) -- Elixir of Poison Resistance
 	end
 	
-	--local spellName, spellRank = Duciel.main:SplitRankFromSpell(spell);
+	--local spellName, spellRank = Clickers.main:SplitRankFromSpell(spell);
 	
 	--print("Spell : " .. spellName);
 	--print("Rank : " .. spellRank);
@@ -195,15 +195,15 @@ function Duciel.main:SpellCast(spell, unit, rank)
 	
 	--print("Cost : " .. spellData.basemanacost);
 
-	if Duciel.main:GetSpellCooldownByName(spell) == 0 then
+	if Clickers.main:GetSpellCooldownByName(spell) == 0 then
 		CastSpellByName(spell, unit);
-		if not(Duciel.main:GetSpellCooldownByName(spell) == 0) then
+		if not(Clickers.main:GetSpellCooldownByName(spell) == 0) then
 			cooldownTracker[spell] = GetTime();
 		end
 	end
 end
 
-function Duciel.main:TrinketAndCast(spell, unit, trinket1, trinket2)
+function Clickers.main:TrinketAndCast(spell, unit, trinket1, trinket2)
 	if trinket1 == nil then
 		trinket1 = true;
 	end
@@ -227,32 +227,32 @@ function Duciel.main:TrinketAndCast(spell, unit, trinket1, trinket2)
 		end
 	end
 	
-	Duciel.main:SpellCast(spell, unit);
+	Clickers.main:SpellCast(spell, unit);
 end
 
-function Duciel.main:UseBagItem(item, self)
-	local bag, slot = Duciel.main:FindItem(item);
+function Clickers.main:UseBagItem(item, self)
+	local bag, slot = Clickers.main:FindItem(item);
 	UseContainerItem(bag, slot, self);
 end
 
-function Duciel.main:IsNotClipping(spell, threshold)
+function Clickers.main:IsNotClipping(spell, threshold)
 	if threshold == nil then
 		threshold = 1.2;
 	end
 		
-	local spellTime = Duciel.main.cooldownTracker[spell];
+	local spellTime = Clickers.main.cooldownTracker[spell];
 	if spellTime == nil then
 		spellTime = 0;
 	end
 	
-	if spellTime + Duciel.main:GetSpellCooldownByName(spell) - GetTime() > threshold then
+	if spellTime + Clickers.main:GetSpellCooldownByName(spell) - GetTime() > threshold then
 		return true;
 	else
 		return false;
 	end
 end
 
-function Duciel.main:FindItem(item)
+function Clickers.main:FindItem(item)
 	local type = type(item);
 	local bag = 0;
 	while (bag < 5) do
@@ -261,7 +261,7 @@ function Duciel.main:FindItem(item)
 		while (slot <= maxSlot) do
 			itemLink = GetContainerItemLink(bag, slot);
 			if itemLink then
-				_, _, id = Duciel.main:SplitHyperlink(itemLink);
+				_, _, id = Clickers.main:SplitHyperlink(itemLink);
 				if (type == "number" and item == id) then
 					return bag, slot;
 				else
@@ -277,30 +277,30 @@ function Duciel.main:FindItem(item)
 	end
 end
 
-function Duciel.main:EquipItem(item, slot)
+function Clickers.main:EquipItem(item, slot)
 	if not(CursorHasItem()) then
-		local bag, slot = Duciel.main:FindItem(item);
+		local bag, slot = Clickers.main:FindItem(item);
 		PickupContainerItem(bag, slot);
 		EquipCursorItem(slot);
 	end
 end
 
-function Duciel.main:SplitHyperlink(link)
+function Clickers.main:SplitHyperlink(link)
 	local _, _, color, object = string.find(link, "|cff(%x*)|(.*)")
-	--Duciel.debug:print("color : "..color)
-	--Duciel.debug:print("object : "..object)
+	--Clickers.debug:print("color : "..color)
+	--Clickers.debug:print("object : "..object)
 	local _, _, objectType, id, a, b, c, d = string.find(object, "H([^:]*):?(%d+):?(%d*):?(%d*):?(%d*)(.*)")
-	--Duciel.debug:print("type : "..objectType)
-	--Duciel.debug:print("ID : "..id)
-	--Duciel.debug:print("a : "..a)
-	--Duciel.debug:print("b : "..b)
-	--Duciel.debug:print("c : "..c)
-	--Duciel.debug:print("d : "..d)
+	--Clickers.debug:print("type : "..objectType)
+	--Clickers.debug:print("ID : "..id)
+	--Clickers.debug:print("a : "..a)
+	--Clickers.debug:print("b : "..b)
+	--Clickers.debug:print("c : "..c)
+	--Clickers.debug:print("d : "..d)
 	
 	return color, objectType, tonumber(id);
 end
 
-function Duciel.main:CheckHP(unit)
+function Clickers.main:CheckHP(unit)
 	if unit == nil then
 		unit = "target"
 	end
@@ -308,10 +308,45 @@ function Duciel.main:CheckHP(unit)
 	return UnitHealth(unit) / UnitHealthMax(unit) * 100;
 end
 
-function Duciel.main:CheckMana(unit)
+function Clickers.main:CheckMana(unit)
 	if unit == nil then
 		unit = "target"
 	end
 
 	return UnitMana(unit) / UnitManaMax(unit) * 100;
+end
+
+function Clickers.main:IsInBossCombat()
+	local bossEncounters = {
+		["Tower of Karazhan"] = {
+			"", --Keeper Gnarlmoon
+			"Ley",
+			"Anomalus",
+			"Medivh",
+			"Chess"
+		},
+		["The Rock of Desolation"] = {
+			"Sandal",
+			"Rupturan",
+			"Kruul",
+			"Mephi"
+		},
+		["Naxxramas"] = {},
+		["Ahn'Qiraj"] = {},
+		["Blackwing Lair"] = {},
+		["Molten Core"] = {},
+		["Blackrock Spire"] = {
+			"0xF1300023890D79EC" --Scarshield Legionnaire on the left
+		},
+	};
+	
+	local zone = GetRealZoneText();
+	
+	for i, boss in ipairs(bossEncounters[zone]) do
+		if UnitAffectingCombat(boss) then
+			return true;
+		end
+	end
+	
+	return false;
 end
